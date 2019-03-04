@@ -1,0 +1,89 @@
+# List of Makefile options
+# see also routine "check_options" in main.c...
+
+# Options that control the SA model
+OPT += -DUPDATETYPETWO       # This updates the positions of type 2 galaxies when the galaxies are written to file (requires aux files to be read)
+OPT += -DDISRUPTION          # Instantaneously and completely disrupt type 2s
+OPT += -DMERGE01             # allows type 1s to merge with type 0s
+OPT += -DINFALL_UPDATE       #search also outside rvir to compute infall mass
+OPT += -DTRACK_MASSGROWTH_CHANNELS
+
+# Options that control output
+OPT += -DHDF5_OUTPUT         # Output the data in HDF5 format
+ifeq (HDF5_OUTPUT,$(findstring HDF5_OUTPUT,$(OPT)))
+OBJS += /Users/Bam/ClionProjects/Rings/io_hdf5.o
+OPT += -DNRECORDS_APP=1000 # Number of galaxies to append at a time
+OPT += -DCOMPRESS=0  # 1 to turn compression on and 0 to turn it off
+OPT += -DCHUNK_SIZE=1000 # size of chunk for hdf5 to output the data (optimised)
+endif
+OPT += -DOVERWRITE_OUTPUT    # overwrite output files if they exist (otherwise will quit without overwriting)
+OPT += -DNOUT=1              #  This sets the number of galaxy output times. IGNORED IN GALAXYTREE MODE. VALUE CORRESPONDS TO NO. OF ROWS READ FROM desired_outputsnaps FILE
+
+OPT += -DUPDATETYPETWO       # This updates the positions of type 2 galaxies when the galaxies are written to file (requires aux files to be read)
+OPT += -DTRACK_MASSGROWTH_CHANNELS
+
+# To run with different dark matter simulation
+#OPT += -DMRII
+
+# Options that control the SA model
+OPT += -DDISRUPTION          # Instantaneously and completely disrupt type 2s
+OPT += -DMERGE01             # allows type 1s to merge with type 0s
+OPT += -DINFALL_UPDATE       #search also outside rvir to compute infall mass
+
+OPT += -DH2_AND_RINGS
+ifeq (H2_AND_RINGS,$(findstring H2_AND_RINGS,$(OPT)))
+OBJS  += /Users/Bam/ClionProjects/Rings/model_radial_flow.o
+OPT += -DOUTPUT_RINGS
+OPT += -DRINGS_IN_BULGES
+endif
+
+# Star formation histories - used for post-process mags and detailed chemical enrichment
+OPT += -DSTAR_FORMATION_HISTORY
+ifeq (STAR_FORMATION_HISTORY,$(findstring STAR_FORMATION_HISTORY,$(OPT)))
+OBJS  += /Users/Bam/ClionProjects/Rings/star_formation_history.o
+OPT += -DOUTPUT_SFH
+endif
+
+# Spectroscopic properties
+OPT += -DCOMPUTE_SPECPHOT_PROPERTIES
+ifeq (COMPUTE_SPECPHOT_PROPERTIES,$(findstring COMPUTE_SPECPHOT_PROPERTIES,$(OPT)))
+OBJS  += /Users/Bam/ClionProjects/Rings/model_spectro_photometric.o
+OPT += -DOUTPUT_REST_MAGS    # output rest-frame magnitudes
+#OPT += -DCOMPUTE_OBS_MAGS    # compute observer-frame magnitudes
+#OPT += -DOUTPUT_OBS_MAGS     # adds observer-frame magnitudes to the standard outputs (either tree or snapshot formats)
+OPT += -DM05 #use Maraston 2005 stellar populations need to change input.par
+#OPT += -DBC03 #use Bruzual & Charlot 2003 stellar populations need to change input.par
+#OPT += -DCB07 #use Charlot & Bruzual 2007 stellar populations need to change input.par
+OPT += -DPHOTTABLES_PRECOMPUTED
+# Post-process
+ifeq (STAR_FORMATION_HISTORY,$(findstring STAR_FORMATION_HISTORY,$(OPT)))
+OPT += -DPOST_PROCESS_MAGS
+OBJS  += /Users/Bam/ClionProjects/Rings/post_process_spec_mags.o
+endif # STAR_FORMATION_HISTORY
+OPT += -DNMAG=5
+endif ### COMPUTE_SPECPHOT_PROPERTIES
+
+# Chemical enrichment of individual element yields
+OPT  += -DDETAILED_METALS_AND_MASS_RETURN
+ifeq (DETAILED_METALS_AND_MASS_RETURN,$(findstring DETAILED_METALS_AND_MASS_RETURN,$(OPT)))
+OPT  += -DFEEDBACK_COUPLED_WITH_MASS_RETURN
+OPT  += -DINDIVIDUAL_ELEMENTS
+ifeq (INDIVIDUAL_ELEMENTS,$(findstring INDIVIDUAL_ELEMENTS,$(OPT)))
+OPT  += -DOUTPUT_ELEMENTS
+#OPT += -DMAINELEMENTS  #If on, then only H, He, O, Mg and Fe are tracked. If off, all elements are tracked (H,He,C,N,O,Ne,Mg,Si,S,Ca,Fe)
+endif
+OPT  += -DMETALRICHWIND
+OBJS += /Users/Bam/ClionProjects/Rings/model_yields.o
+OBJS += /Users/Bam/ClionProjects/Rings/yields_read_tables.o
+OBJS += /Users/Bam/ClionProjects/Rings/yields_integrals.o
+OBJS += /Users/Bam/ClionProjects/Rings/yields_calc_SNe_rates.o
+OPT += -DPORTINARI #Use Portinari et al. (1998) SN-II yield tables.
+OPT += -DDTD #If on, a delay time distribution (DTD) is used for SNIa enrichment. If off, the Matteucci & Greggio (1986) formalism is used.
+ifeq (DTD,$(findstring DTD,$(OPT)))
+#OPT += -DBIMODALDTD #Use the Mannucci et al. (2006) delay time distribution. ~Half SNe-Ia die within ~100 Myrs. Rest distributed out to ~11 Gyrs.
+#OPT += -DGAUSSIANDTD #Use a Gau/net/bootes/scratch-ssd/SAM/test4/MR/ssian delay time distribution, centered on 2 Gyrs.
+OPT += -DPOWERLAWDTD #Use a declining power-law delay time distribution of slope -1.12.
+endif
+endif
+
+OPT += -DDI_INSTABILITIES
