@@ -1062,7 +1062,7 @@ void update_massweightage (int p, double stars, double time) {
 #endif
 	}
 }
-
+// TESTING GIT
 void fix_gas_instabilities (int p, int j, double SigmaGasRings, double SigmaCrit, double fmig) {
 	double UnstableMass, fractionRings[RNUM];
 	for (j = 0; j < RNUM; j ++) {
