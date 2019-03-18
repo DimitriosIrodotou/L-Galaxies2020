@@ -1,5 +1,9 @@
-/**
- * Galaxy structure for output
+/*
+ * Galaxy structure for output.
+ *
+ * NOTE: due to the way that the HDF5 builder routines work, variables should be commented out
+ * with slash-star ... star-slash and not //.  Otherwise they are included in the properties list.
+ *
  */
 
 #ifdef LIGHT_OUTPUT
@@ -14,12 +18,12 @@ struct GALAXY_OUTPUT {
     float Rvir; // Mpc/h // Virial radius of the subhalo the galaxy is/was the centre of.
     float Vvir; // km/s // Virial velocity of the subhalo the galaxy is/was the centre of.
     float DistanceToCentralGal[3]; // Mpc/h // Distance to central galaxy (proper/comoving?)
-  /* baryonic reservoirs */
+    /* baryonic reservoirs */
     float ColdGas; // 10^10/h Msun // Mass of cold gas.
     float DiskMass; // 10^10/h Msun // Mass of stars in the disk
     float BulgeMass; // 10^10/h Msun // Mass of stars in the bulge
     float HotGas; // 10^10/h Msun // Mass of hot gas
-    //float ReheatedGas; // 10^10/h Msun // Mass of Reheated gas
+    /* float ReheatedGas; // 10^10/h Msun // Mass of Reheated gas */
     float BlackHoleMass; // 10^10/h Msun // Mass of black hole
     /* magnitudes in various bands */
 #ifdef   COMPUTE_SPECPHOT_PROPERTIES
@@ -127,9 +131,7 @@ struct GALAXY_OUTPUT {
     float BulgeMass; // 10^10/h Msun // Mass of stars in the bulge
 #ifdef OUTPUT_RINGS
     float DiskMassRings[RNUM]; // 1e10 Msun/h // Mass of stars within each annular ring
-#ifdef RINGS_IN_BULGES
     float BulgeMassRings[RNUM]; // 1e10 Msun/h // Mass of stars within each annular ring
-#endif
 #endif     //H2_AND_RINGS
     float HotGas; // 10^10/h Msun // Mass in hot gas
     float ReheatedGas; // 10^10/h Msun // Mass in reheated gas
@@ -138,7 +140,7 @@ struct GALAXY_OUTPUT {
     float ExcessMass; // 10^10/h Msun // Mass in excess of universal baryon fraction
 #endif     //EXCESS_MASS
     float BlackHoleMass; // 10^10/h Msun // Mass of central black hole
-    //float BlackHoleGas; // 10^10/h Msun // Mass in BH accretion disk
+    /* float BlackHoleGas; // 10^10/h Msun // Mass in BH accretion disk */
     /* ICL magnitude and mass*/
     float ICM; //10^10/h Msun //Total mass in metals in intra-cluster stars, for type 0,1
 #ifdef TRACK_MASSGROWTH_CHANNELS
@@ -149,59 +151,32 @@ struct GALAXY_OUTPUT {
 #ifdef TRACK_BURST
     float BurstMass; // 1e10 Msun/h // Mass formed in starbursts
 #endif //TRACK_BURST
-#ifdef     DETAILED_METALS_AND_MASS_RETURN
-    struct metals MetalsColdGas; // 10^10/h Msun // Mass in metals in cold gas.
+    float MetalsColdGas[NUM_METAL_CHANNELS]; // 10^10/h Msun // Mass in metals in cold gas.
 #ifdef OUTPUT_RINGS
-    struct metals MetalsColdGasRings[RNUM]; // 10^10/h Msun // Mass in metals in cold gas in each annular ring
+    float MetalsColdGasRings[RNUM][NUM_METAL_CHANNELS]; // 10^10/h Msun // Mass in metals in cold gas in each annular ring
 #endif       //H2_AND_RINGS
-    struct metals MetalsStellarMass; // 10^10/h Msun // Mass in metals in the disk
-    struct metals MetalsDiskMass; // 10^10/h Msun // Mass in metals in the disk
-    struct metals MetalsBulgeMass; // 10^10/h Msun // Mass in metals in the bulge
+    float MetalsStellarMass[NUM_METAL_CHANNELS]; // 10^10/h Msun // Mass in metals in the disk
+    float MetalsDiskMass[NUM_METAL_CHANNELS]; // 10^10/h Msun // Mass in metals in the disk
+    float MetalsBulgeMass[NUM_METAL_CHANNELS]; // 10^10/h Msun // Mass in metals in the bulge
 #ifdef OUTPUT_RINGS
-    struct metals MetalsDiskMassRings[RNUM]; // 10^10/h Msun // Mass in metals in stars in each annular ring
-#ifdef RINGS_IN_BULGES
-    struct metals MetalsBulgeMassRings[RNUM]; // 10^10/h Msun // Mass in metals in stars in each annular ring
-#endif
+    float MetalsDiskMassRings[RNUM][NUM_METAL_CHANNELS]; // 10^10/h Msun // Mass in metals in stars in each annular ring
+    float MetalsBulgeMassRings[RNUM][NUM_METAL_CHANNELS]; // 10^10/h Msun // Mass in metals in stars in each annular ring
 #endif       //H2_AND_RINGS
-    struct metals MetalsHotGas; // 10^10/h Msun // Mass in metals in the hot gas
-    //struct metals MetalsReheatedGas; // 10^10/h Msun // Mass in metals in the Reheated gas
-    struct metals MetalsEjectedMass; // 10^10/h Msun // Mass in metals in the ejected gas
-#ifdef       EXCESS_MASS
-    struct metals MetalsExcessMass; // 10^10/h Msun // Mass in metals associated with ExcessMass component
+    float MetalsHotGas[NUM_METAL_CHANNELS]; // 10^10/h Msun // Mass in metals in the hot gas
+    /* float MetalsReheatedGas[NUM_METAL_CHANNELS]; // 10^10/h Msun // Mass in metals in the Reheated gas */
+    float MetalsEjectedMass[NUM_METAL_CHANNELS]; // 10^10/h Msun // Mass in metals in the ejected gas
+#ifdef EXCESS_MASS
+    float MetalsExcessMass[NUM_METAL_CHANNELS]; // 10^10/h Msun // Mass in metals associated with ExcessMass component
 #endif       //EXCESS_MASS
-    struct metals MetalsICM; // 10^10/h Msun // Mass in metals in intra-cluster stars, for type 0,1
+    float MetalsICM[NUM_METAL_CHANNELS]; // 10^10/h Msun // Mass in metals in intra-cluster stars, for type 0,1
 #ifdef       METALS_SELF
-    struct metals MetalsHotGasSelf; // 10^10/h Msun // hot gas metals that come from self
+    float MetalsHotGasSelf[NUM_METAL_CHANNELS]; // 10^10/h Msun // hot gas metals that come from self
 #endif       //METALS_SELF
-#else      //DETAILED_METALS_AND_MASS_RETURN
-    float MetalsColdGas; // 10^10/h Msun // Mass in metals in cold gas.
-#ifdef OUTPUT_RINGS
-    float MetalsColdGasRings[RNUM]; // 10^10/h Msun // Mass in metals in cold gas in each annular ring
-#endif       //H2_AND_RINGS
-    float MetalsStellarMass; // 10^10/h Msun //	Mass in metals in the bulge+disk
-    float MetalsDiskMass; // 10^10/h Msun // Mass in metals in the disk
-    float MetalsBulgeMass; // 10^10/h Msun // Mass in metals in the bulge
-#ifdef OUTPUT_RINGS
-    float MetalsDiskMassRings[RNUM]; // 10^10/h Msun // Mass in metals in stars in each annular ring
-#ifdef RINGS_IN_BULGES
-    float MetalsBulgeMassRings[RNUM]; // 10^10/h Msun // Mass in metals in stars in each annular ring
-#endif
-#endif       //H2_AND_RINGS
-    float MetalsHotGas; // 10^10/h Msun // Mass in metals in the hot gas
-//float MetalsReheatedGas; // 10^10/h Msun // Mass in metals in the Reheated gas
-    float MetalsEjectedMass; // 10^10/h Msun // Mass in metals in the ejected gas
-#ifdef       EXCESS_MASS
-    float MetalsExcessMass; // 10^10/h Msun // Mass in metals associated with ExcessMass component
-#endif       //EXCESS_MASS
-    float MetalsICM; // 10^10/h Msun // Mass in metals in intra-cluster stars, for type 0,1
-#ifdef       METALS_SELF
-    float MetalsHotGasSelf; // 10^10/h Msun // hot gas metals that come from self
-#endif       //METALS_SELF
-#endif     //DETAILED_METALS_AND_MASS_RETURN
-         /* misc */
+
+    /* misc */
     float PrimordialAccretionRate; // Msun/yr // Accretion rate of primordial gas.
     float CoolingRadius; // Mpc/h // The radius within which the cooling time scale is shorter than the dynamical timescale
-    //float CoolingGas; // Mpc/h // Mass of cooling gas
+    /* float CoolingGas; // 10^10/h Msun // Mass of cooling gas */
     float CoolingRate; // Msun/yr // Cooling rate of the hot gas
     float CoolingRate_beforeAGN; // Msun/yr // What the cooling rate of the hot gas would have been if there was no AGN feedback.
     float QuasarAccretionRate; // Msun/yr // Rate at which cold gas is accreted into the central black hole in the quasar mode.
@@ -244,7 +219,7 @@ struct GALAXY_OUTPUT {
     float ObsMagICL[NMAG]; // AB mag // observer-frame absolute mags for intra-cluster light
 #endif       //ICL
 #ifdef       OUTPUT_MOMAF_INPUTS
-    // define luminosities as if the galaxy were one snapshot earlier, i.e. higher redshift, than its actual snapshot
+    /* define luminosities as if the galaxy were one snapshot earlier, i.e. higher redshift, than its actual snapshot */
     float ObsMagDust[NMAG]; // AB mag // Dust-corrected obs-frame absolute mags
     float ObsMag[NMAG]; // AB mag // Obs-frame absolute mags
     float ObsMagBulge[NMAG]; // AB mag // Obs-frame absolute mags for the bulge
@@ -252,7 +227,7 @@ struct GALAXY_OUTPUT {
     float dObsMagICL[NMAG];  // AB mag // Obs-frame absolute mags of ICL
 #endif	       //ICL
 #ifdef         KITZBICHLER
-    // define luminosities as if the galaxy were one snapshot later, i.e. lower redshift, than its actual snapshot
+    /* define luminosities as if the galaxy were one snapshot later, i.e. lower redshift, than its actual snapshot */
     float dObsMagDust_forward[NMAG]; // AB mag // Dust-corrected, one snapshot later-frame absolute mags
     float dObsMag_forward[NMAG]; // AB mag // One snapshot later-frame absolute mags
     float dObsMagBulge_forward[NMAG]; // AB mag // One snapshot later-frame absolute mags for the bulge
@@ -272,26 +247,18 @@ struct GALAXY_OUTPUT {
     int sfh_ibin; // None // Index of highest star formation history bin currently in use
     int sfh_numbins; // None // Number of non empty star formation history bins
 #ifndef    NORMALIZEDDB
-    //float sfh_time[SFH_NBIN]; // yr // lookback time to middle of star formation history bin.
-    //float sfh_dt[SFH_NBIN]; // yr // Width of star formation history bin.
+    /* float sfh_time[SFH_NBIN]; // yr // lookback time to middle of star formation history bin. */
+    /* float sfh_dt[SFH_NBIN]; // yr // Width of star formation history bin. */
     float sfh_DiskMass[SFH_NBIN]; // 10^10 Msun/h // Star formation history in the disk.
     float sfh_BulgeMass[SFH_NBIN]; // 10^10 Msun/h // Star formation history in the bulge.
 #ifdef OUTPUT_RINGS
     float sfh_DiskMassRings[RNUM][SFH_NBIN]; // 10^10 Msun/h // Star formation history in the disk RINGS.
-#ifdef RINGS_IN_BULGES
     float sfh_BulgeMassRings[RNUM][SFH_NBIN]; // 10^10 Msun/h // Star formation history in the bulge RINGS.
 #endif
-#endif
     float sfh_ICM[SFH_NBIN]; // 10^10 Msun/h // Star formation history in intra-cluster stars.
-#ifdef       DETAILED_METALS_AND_MASS_RETURN
-    struct metals sfh_MetalsDiskMass[SFH_NBIN]; // 10^10 Msun/h // Metal formation history in the disk.
-    struct metals sfh_MetalsBulgeMass[SFH_NBIN]; // 10^10 Msun/h // Metal formation history in the bulge.
-    struct metals sfh_MetalsICM[SFH_NBIN]; // 10^10 Msun/h // Metal formation history in the ICM.
-#else        //DETAILED_METALS_AND_MASS_RETURN
-    float sfh_MetalsDiskMass[SFH_NBIN]; // 10^10 Msun/h // Metal formation history in the disk.
-    float sfh_MetalsBulgeMass[SFH_NBIN]; // 10^10 Msun/h // Metal formation history in the bulge.
-    float sfh_MetalsICM[SFH_NBIN]; // 10^10 Msun/h // Metal formation history in the ICM.
-#endif       //DETAILED_METALS_AND_MASS_RETURN
+    float sfh_MetalsDiskMass[SFH_NBIN][NUM_METAL_CHANNELS]; // 10^10 Msun/h // Metal formation history in the disk.
+    float sfh_MetalsBulgeMass[SFH_NBIN][NUM_METAL_CHANNELS]; // 10^10 Msun/h // Metal formation history in the bulge.
+    float sfh_MetalsICM[SFH_NBIN][NUM_METAL_CHANNELS]; // 10^10 Msun/h // Metal formation history in the ICM.
 #ifdef TRACK_SFH_MASSGROWTH_CHANNELS
     float sfh_MassFromInSitu[SFH_NBIN]; // 10^10 Msun/h // Star formation history of stars formed in situ.
     float sfh_MassFromMergers[SFH_NBIN]; // 10^10 Msun/h // Star formation history of stars accreted from mergers.
@@ -314,16 +281,14 @@ struct GALAXY_OUTPUT {
     float BulgeMass_elements[NUM_ELEMENTS]; // 10^10 Msun/h // Mass of elements locked up in stars in bulge.
 #ifdef OUTPUT_RINGS
     float DiskMassRings_elements[RNUM][NUM_ELEMENTS]; // 10^10 Msun/h // Mass of elements locked up in stars in each annular ring.
-#ifdef RINGS_IN_BULGES
     float BulgeMassRings_elements[RNUM][NUM_ELEMENTS]; // 10^10 Msun/h // Mass of elements locked up in stars in each annular ring.
-#endif
 #endif     //H2_AND_RINGS
     float ColdGas_elements[NUM_ELEMENTS]; // 10^10 Msun/h // Mass of elements locked up in stars in cold gas.
 #ifdef OUTPUT_RINGS
     float ColdGasRings_elements[RNUM][NUM_ELEMENTS]; // 10^10 Msun/h // Mass of elements locked up in cold gas in each annular ring.
 #endif     //H2_AND_RINGS
     float HotGas_elements[NUM_ELEMENTS]; // 10^10 Msun/h // Mass of elements locked up in hot gas.
-    //float ReheatedGas_elements[NUM_ELEMENTS]; // 10^10 Msun/h // Mass of elements locked up in reheated gas.
+    /* float ReheatedGas_elements[NUM_ELEMENTS]; // 10^10 Msun/h // Mass of elements locked up in reheated gas. */
     float ICM_elements[NUM_ELEMENTS]; // 10^10 Msun/h // Mass of elements locked up in stars in the ICM
     float EjectedMass_elements[NUM_ELEMENTS]; // 10^10 Msun/h // Mass of elements locked up in ejected gas.
 #ifdef     EXCESS_MASS
@@ -338,15 +303,13 @@ struct SFH_BIN {
     long long GalID; // None // ID of the galaxy
     short snapnum; // None // snapnum of the galaxy, repeated here for faster lookups of times etc
     short sfh_ibin; // None //Index of highest bin currently in use
-    //    float sfh_time; // yr // Lookback time at the middle of bin.
-    //    float sfh_dt; // yr // time width of bin.
+    /* float sfh_time; // yr // Lookback time at the middle of bin. */
+    /* float sfh_dt; // yr // time width of bin. */
     float sfh_DiskMass; // 1e10 Msun/h // SFH of disk
     float sfh_BulgeMass; // 1e10 Msun/h // SFH of bulge
 #ifdef OUTPUT_RINGS
     float sfh_DiskMassRings[RNUM]; // 10^10 Msun/h // Star formation history in the disk RINGS.
-#ifdef RINGS_IN_BULGES
     float sfh_BulgeMassRings[RNUM]; // 10^10 Msun/h // Star formation history in the bulge RINGS.
-#endif
 #endif
     float sfh_ICM; // 1e10 Msun/h // SFH of ICM
 #ifdef TRACK_SFH_MASSGROWTH_CHANNELS
@@ -357,22 +320,16 @@ struct SFH_BIN {
 #ifdef TRACK_BURST
     float sfh_BurstMass; // 10^10 Msun/h // Star formation history of stars formed in starbursts.
 #endif //TRACK_BURST
-#ifdef DETAILED_METALS_AND_MASS_RETURN
-    struct metals sfh_MetalsDiskMass; // 1e10 Msun/h // Metals locked up in stars in disk.
-    struct metals sfh_MetalsBulgeMass; // 1e10 Msun/h // Metals locked up in stars in bulge.
-    struct metals sfh_MetalsICM; // 1e10 Msun/h // Metals locked up in stars in ICM.
-#else      //DETAILED_METALS_AND_MASS_RETURN
-    float sfh_MetalsDiskMass; // 1e10 Msun/h // Metals locked up in stars in disk.
-    float sfh_MetalsBulgeMass; // 1e10 Msun/h //Metals locked up in stars in bulge.
-    float sfh_MetalsICM; // 1e10 Msun/h // Metals locked up in stars in ICM.
-#endif     //DETAILED_METALS_AND_MASS_RETURN
+    float sfh_MetalsDiskMass[NUM_METAL_CHANNELS]; // 1e10 Msun/h // Metals locked up in stars in disk.
+    float sfh_MetalsBulgeMass[NUM_METAL_CHANNELS]; // 1e10 Msun/h // Metals locked up in stars in bulge.
+    float sfh_MetalsICM[NUM_METAL_CHANNELS]; // 1e10 Msun/h // Metals locked up in stars in ICM.
 };
 
 struct SFH_Time {
     int snapnum; // None // snapnum
     int bin; // None // index of current bin
-    double lookbacktime; // yr // lookback time to centeTr of current bin
-    // proposal: in output write the start of the bin and its end, rather than center and dt
+    /* proposal: in output write the start of the bin and its end, rather than centre and dt */
+    double lookbacktime; // yr // lookback time to centre of current bin
     double dt; // yr // width of the current bin
     int nbins; // None // number of highest resolution bins used to create current bin
 };

@@ -33,8 +33,8 @@ OPT += -DINFALL_UPDATE       #search also outside rvir to compute infall mass
 OPT += -DH2_AND_RINGS
 ifeq (H2_AND_RINGS,$(findstring H2_AND_RINGS,$(OPT)))
 OBJS  += /Users/Bam/ClionProjects/Rings/model_radial_flow.o
-OPT += -DOUTPUT_RINGS
-OPT += -DRINGS_IN_BULGES
+#OPT += -DOUTPUT_RINGS
+#OPT += -DRINGS_IN_BULGES
 endif
 
 # Star formation histories - used for post-process mags and detailed chemical enrichment
@@ -69,8 +69,8 @@ ifeq (DETAILED_METALS_AND_MASS_RETURN,$(findstring DETAILED_METALS_AND_MASS_RETU
 OPT  += -DFEEDBACK_COUPLED_WITH_MASS_RETURN
 OPT  += -DINDIVIDUAL_ELEMENTS
 ifeq (INDIVIDUAL_ELEMENTS,$(findstring INDIVIDUAL_ELEMENTS,$(OPT)))
-OPT  += -DOUTPUT_ELEMENTS
-#OPT += -DMAINELEMENTS  #If on, then only H, He, O, Mg and Fe are tracked. If off, all elements are tracked (H,He,C,N,O,Ne,Mg,Si,S,Ca,Fe)
+#OPT  += -DOUTPUT_ELEMENTS
+OPT += -DMAINELEMENTS  #If on, then only H, He, O, Mg and Fe are tracked. If off, all elements are tracked (H,He,C,N,O,Ne,Mg,Si,S,Ca,Fe)
 endif
 OPT  += -DMETALRICHWIND
 OBJS += /Users/Bam/ClionProjects/Rings/model_yields.o
@@ -86,4 +86,4 @@ OPT += -DPOWERLAWDTD #Use a declining power-law delay time distribution of slope
 endif
 endif
 
-OPT += -DDI_INSTABILITIES
+#OPT += -DDI_INSTABILITIES

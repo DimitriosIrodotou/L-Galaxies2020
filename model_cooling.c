@@ -70,13 +70,15 @@
 
 void compute_cooling(int p, double dt, int ngal)
 {
-  double Vvir, Rvir, x, lambda, tcool, rcool, temp, tot_hotMass, tot_metals, HotRadius;
+  double Vvir, Rvir, x, lambda, tcool, rcool, temp, tot_hotMass, tot_metals=0., HotRadius;
   double coolingGas, logZ, rho_rcool, rho0;
 
   mass_checks(p,"cooling.c",__LINE__);
 
   tot_hotMass = Gal[p].HotGas;
-  tot_metals = metals_total(Gal[p].MetalsHotGas);
+  int ii;
+  for(ii=0;ii<NUM_METAL_CHANNELS;ii++)
+    tot_metals += Gal[p].MetalsHotGas[ii];
 
   if(tot_hotMass > 1.0e-6)
   {
@@ -84,10 +86,7 @@ void compute_cooling(int p, double dt, int ngal)
      * probably always HotRadius*/
     Vvir = Gal[p].Vvir;
     Rvir = Gal[p].Rvir;
-    
-      
     tcool = Rvir / Vvir; // tcool = t_dynamical = Rvir/Vvir
-
 
     /* temp -> Temperature of the Gas in Kelvin, obtained from
      * hidrostatic equilibrium KT=0.5*mu_p*(Vc)^2 assuming Vvir~Vc */
@@ -182,7 +181,7 @@ void do_AGN_heating(double dt, int ngal, int FOF_centralgal)
   double AGNrate, AGNheating, AGNaccreted, AGNcoeff, fraction, EDDrate, FreeFallRadius;
   double dist, HotGas, HotRadius, Rvir, Vvir, Mvir;
   double LeftOverEnergy, CoolingGas;
-  int p;
+  int p, ii;
 
   for (p = 0; p < ngal; p++)
     {
@@ -227,9 +226,11 @@ void do_AGN_heating(double dt, int ngal, int FOF_centralgal)
 	    }
 	  else if(AGNRadioModeModel == 2 || AGNRadioModeModel == 3)
 	    {
-	      double x, lambda, temp, logZ, tot_metals;
+	      double x, lambda, temp, logZ, tot_metals=0.;
 
-	      tot_metals = metals_total(Gal[p].MetalsHotGas);
+	      int ii;
+	      for(ii=0;ii<NUM_METAL_CHANNELS;ii++)
+	         tot_metals += Gal[p].MetalsHotGas[ii];
 
 	      /* temp -> Temperature of the Gas in Kelvin, obtained from
 	       * hidrostatic equilibrium KT=0.5*mu_p*(Vc)^2 assuming Vvir~Vc */
@@ -286,27 +287,28 @@ void do_AGN_heating(double dt, int ngal, int FOF_centralgal)
 	  AGNheating = AGNcoeff * AGNaccreted;
 
 
-	  if(AGNRadioModeModel == 0 && Gal[p].Type==1)
-	    {
+	  if(AGNRadioModeModel == 0 && Gal[p].Type==1) 
+	  {
 	      dist=separation_gal(p,FOF_centralgal);
-	      if(dist < Gal[FOF_centralgal].Rvir)
-		{
-		  if(AGNheating > (Gal[p].CoolingGas + Gal[FOF_centralgal].CoolingGas))
-		    {
+	      if(dist < Gal[FOF_centralgal].Rvir) 
+	      {
+		  if (AGNheating > (Gal[p].CoolingGas + Gal[FOF_centralgal].CoolingGas)) 
+		  {
 		      AGNheating = (Gal[p].CoolingGas + Gal[FOF_centralgal].CoolingGas);
 		      AGNaccreted = (Gal[p].CoolingGas + Gal[FOF_centralgal].CoolingGas) / AGNcoeff;
-		    }
-		  if(AGNheating > Gal[p].CoolingGas)
-		    LeftOverEnergy = AGNheating - Gal[p].CoolingGas;
-		}
-	    }
+		  }
+		  if (AGNheating > Gal[p].CoolingGas) LeftOverEnergy = AGNheating - Gal[p].CoolingGas;
+	      }
+	      // Added the following line in as a fix because without it Type 1 BHs can grow ridiculously large.
+	      // In actual fact, this whole section needs fully documenting as it is not clear what is supposed to be going on.
+	      else 
+		  if (AGNheating > Gal[p].CoolingGas) AGNaccreted = Gal[p].CoolingGas / AGNcoeff;
+	  }
 	  else
-	    if(AGNheating > Gal[p].CoolingGas)
-	      AGNaccreted = Gal[p].CoolingGas / AGNcoeff;
+	      if (AGNheating > Gal[p].CoolingGas) AGNaccreted = Gal[p].CoolingGas / AGNcoeff;
 
 	  /* limit heating to cooling rate */
-	  if(AGNheating > Gal[p].CoolingGas)
-	    AGNheating = Gal[p].CoolingGas;
+	  if (AGNheating > Gal[p].CoolingGas) AGNheating = Gal[p].CoolingGas;
 
 	  mass_checks(p,"cooling.c",__LINE__);
 
@@ -315,7 +317,8 @@ void do_AGN_heating(double dt, int ngal, int FOF_centralgal)
 	  Gal[p].RadioAccretionRate += AGNaccreted / (dt*STEPS);
 	  fraction=AGNaccreted/Gal[p].HotGas;
 	  Gal[p].HotGas -= AGNaccreted;
-	  Gal[p].MetalsHotGas = metals_add(Gal[p].MetalsHotGas,Gal[p].MetalsHotGas, -fraction);
+	  for(ii=0;ii<NUM_METAL_CHANNELS;ii++)
+	    Gal[p].MetalsHotGas[ii] += (-fraction * Gal[p].MetalsHotGas[ii]);
 	  mass_checks(p,"cooling.c",__LINE__);
 #ifdef INDIVIDUAL_ELEMENTS
 	  int kk;
@@ -323,7 +326,8 @@ void do_AGN_heating(double dt, int ngal, int FOF_centralgal)
 	    Gal[p].HotGas_elements[kk] *= (1-fraction);
 #endif
 #ifdef METALS_SELF
-	  Gal[p].MetalsHotGasSelf = 	metals_add(Gal[p].MetalsHotGasSelf,Gal[p].MetalsHotGasSelf,-fraction);
+	  for(ii=0;ii<NUM_METAL_CHANNELS;ii++)
+	    Gal[p].MetalsHotGasSelf[ii] += (-fraction * Gal[p].MetalsHotGasSelf[ii]);
 #endif	
 
 	}

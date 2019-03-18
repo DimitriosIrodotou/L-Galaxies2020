@@ -1,0 +1,15 @@
+# List of compilers and flags.
+
+# Default set
+CC       = gcc                  # sets the C-compiler
+CC_MD    = gcc                  # for the metadata
+ifeq (DEBUG,$(findstring DEBUG,$(OPT)))
+OPTIMIZE =   -g -Wall
+else
+OPTIMIZE = -O3                  # optimization
+endif
+
+#GSL_INCL = -I/sw/include
+#GSL_LIBS = -L/sw/lib
+GSL_INCL =
+GSL_LIBS =

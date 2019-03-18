@@ -6,11 +6,12 @@
 #define  AVOGADRO    6.0222e23
 #define  BOLTZMANN   1.3806e-16
 #define  GAS_CONST   8.31425e7
-#define  C           2.9979e10
+#define  C           2.9979e10 // Dangerous to have such a short name
 #define  PLANCK      6.6262e-27
 #define  CM_PER_MPC  3.085678e24 // TODO this is read in from input.par
 #define  PROTONMASS  1.6726e-24
 #define  HUBBLE      3.2407789e-18   /* in h/sec */
+#define  MUMH        0.59341*PROTONMASS // Could be a variable but we never change it!
 
 //To understand the units in the code read through set_units in init.c!!!
 #define  SEC_PER_MEGAYEAR   3.155e13
@@ -67,9 +68,18 @@
 #define RNUM 12          /* radially divide one disk into RNUM */
 //#define RNUM 30          /* radially divide one disk into RNUM */
 #define WARM_PHASE_FACTOR 1.3 // to use when deriving HI and H2 from total cold gas because 1/3 of it is ionized)
-#define LENSIGMAH 101  /*H2 fraction table from Krumholz et al. 2009*/
-#define LENZ 13
+#define LENSIGMAH 40
+#define LENZ 6
+//#define LENSIGMAH 101
+//#define LENZ 13
 #endif
+
+#ifdef METALRICHWIND
+#ifdef GASDENSITYFWIND
+#define NORMGASDENSITY 10. //Msun/pc^2 //ISM gas surface density to normalise to when calculating density-dependent direct ejection into HotGas (18-05-18)
+#endif
+#endif
+
 				
 #define  ALLOCPARAMETER 50.  /* new definition !!! THIS HAS TO BE 50 !!! DONT EVER EVER EVER CHANGE !!! */
 

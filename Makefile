@@ -15,6 +15,7 @@ OBJS  = /Users/Bam/ClionProjects/Rings/main.o \
 	/Users/Bam/ClionProjects/Rings/update_type_two.o \
 	/Users/Bam/ClionProjects/Rings/metals.o \
 	/Users/Bam/ClionProjects/Rings/model_infall.o \
+	/Users/Bam/ClionProjects/Rings/model_h2fraction.o \
 	/Users/Bam/ClionProjects/Rings/model_cooling.o \
 	/Users/Bam/ClionProjects/Rings/model_starformation_and_feedback.o \
 	/Users/Bam/ClionProjects/Rings/model_reincorporation.o \
@@ -51,7 +52,7 @@ include My_Makefile_options/My_Makefile_options_rings
 # Choose your system type (copy an entry from Makefile_compilers)
 # SYSTYPE = "ETH"
 # include Makefile_compilers
-include My_Makefile_compilers
+include Makefile_compilers
 
 #LIBS   =   -g $(LDFLAGS) -lm  $(GSL_LIBS)  $(RLIBS) -lgsl -lgslcblas $(HDF5_LIBS) -lhdf5_serial -lhdf5_serial_hl
 LIBS   =   -g $(LDFLAGS) -lm  $(GSL_LIBS)  $(RLIBS) -lgsl -lgslcblas $(HDF5_LIBS) -lhdf5 -lhdf5_hl
@@ -63,7 +64,7 @@ all: metadata $(EXEC)
 $(EXEC): $(OBJS) 
 	$(CC) $(OPTIMIZE) $(OBJS) $(LIBS)   -o  $(EXEC)  
 
-$(OBJS): $(INCL) Makefile Makefile_compilers My_Makefile_options
+$(OBJS): $(INCL) Makefile Makefile_compilers My_Makefile_options/My_Makefile_options_rings
 
 clean:
 	rm -f $(OBJS)

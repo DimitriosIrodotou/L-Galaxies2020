@@ -168,6 +168,10 @@ double* create_grid (double WaveMin, double WaveMax,int AgeLoop, double redshift
 		for(i=0;i<*Grid_Length;i++)
 			grid[i]=(1+redshift)*LambdaInputSSP[AgeLoop][*Min_Wave_Grid+i];
 
+	/*	for(i=0;i<*Grid_Length;i++)
+       printf("Wave Min=%f Wave Max=%f Grid Min=%d Grid Max=%d Grid_Length=%d lgrid=%f\n",
+       WaveMin, WaveMax, *Min_Wave_Grid, *Max_Wave_Grid, *Grid_Length, (1+redshift)*LambdaInputSSP[AgeLoop][*Min_Wave_Grid+i]);
+		exit(0);*/
 
 		return grid;
 }

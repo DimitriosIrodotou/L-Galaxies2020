@@ -5,26 +5,27 @@
 struct dist_table *TimeTable, *DistanceTable;
 #endif
 
-struct GALAXY            /* Galaxy data */
-		*Gal, *HaloGal;
+struct GALAXY			/* Galaxy data */
+ *Gal, *HaloGal;
 
-struct halo_data*Halo, *Halo_Data;
+struct halo_data *Halo, *Halo_Data;
 
-struct halo_aux_data        /* auxiliary halo data */
-		*HaloAux;
+struct halo_aux_data		/* auxiliary halo data */
+ *HaloAux;
 
-struct halo_ids_data*HaloIDs, *HaloIDs_Data;
+struct halo_ids_data *HaloIDs, *HaloIDs_Data;
 
 double MinGalOutputMass;
 
-int FirstFile;            /* first and last file for processing */
+int FirstFile;			/* first and last file for processing */
 int LastFile;
+
 
 double AllocValue_MaxHaloGal;
 double AllocValue_MaxGal;
 double AllocValue_MaxGalTree;
 
-int Ntrees;            /* number of trees in current file */
+int Ntrees;			/* number of trees in current file */
 
 int MaxGal;
 int NHaloGal, MaxHaloGal;
@@ -61,6 +62,7 @@ char FileNrDir[512];
 int ListInputFilrNr[111];
 #endif
 
+
 int TotHalos;
 int TotGalaxies[NOUT];
 int *TreeNgals[NOUT];
@@ -72,9 +74,10 @@ int LastDarkMatterSnapShot_MR;
 int LastDarkMatterSnapShot_MRII;
 #endif
 
-int*FirstHaloInSnap;
-int*TreeNHalos;
-int*TreeFirstHalo;
+
+int *FirstHaloInSnap;
+int *TreeNHalos;
+int *TreeFirstHalo;
 
 double MaxMemSize;
 
@@ -83,6 +86,7 @@ size_t HighMarkBytes;
 size_t FreeBytes;
 
 int ThisTask, NTask;
+
 
 #ifdef GALAXYTREE
 int GalCount;
@@ -94,6 +98,9 @@ int TotGalSFHBinCount;
 #endif
 
 size_t HighMark;
+
+
+
 
 /* cosmological parameters */
 double BaryonFrac;
@@ -120,6 +127,7 @@ double BoxSize_MRII;
 double PartMass_OriginalCosm_MRII;
 double BoxSize_OriginalCosm_MRII;
 #endif
+
 
 /* flags */
 int StarFormationModel;
@@ -176,7 +184,8 @@ double EjectSlope;
 double ReIncorporationFactor;
 double ReincZpower;
 double ReincVelocitypower;
-double FracZtoHot;
+double FracZSNIItoHot;
+double FracZSNIatoHot;
 #ifdef FEEDBACK_COUPLED_WITH_MASS_RETURN
 double EnergySNcode, EnergySN;
 double EnergySNIIcode, EnergySNII;
@@ -191,25 +200,32 @@ double EtaSNcode, EtaSN;
 double Clumpingfactor;
 double GasInflowVel;
 double RingRadius[RNUM];
+double RingArea[RNUM];
+double InverseRingArea[RNUM];
+/*H2fraction tables */
+double H2Fraction[LENZ][LENSIGMAH];
+double H2Fraction_Zgrid[LENZ];
+double H2Fraction_SigmaHgrid[LENSIGMAH];
 #endif
 
 double UnitLength_in_cm,
-       UnitTime_in_s,
-       UnitVelocity_in_cm_per_s,
-       UnitMass_in_g,
-       RhoCrit,
-       UnitPressure_in_cgs,
-       UnitDensity_in_cgs,
-       UnitCoolingRate_in_cgs,
-       UnitEnergy_in_cgs,
-       UnitTime_in_Megayears,
-       UnitTime_in_years,
-       G,
-       Hubble,
-       a0, ar;
+  UnitTime_in_s,
+  UnitVelocity_in_cm_per_s,
+  UnitMass_in_g,
+  RhoCrit,
+  UnitPressure_in_cgs,
+  UnitDensity_in_cgs,
+  UnitCoolingRate_in_cgs,
+  UnitEnergy_in_cgs,
+  UnitTime_in_Megayears,
+  UnitTime_in_years,
+  G,
+  Hubble,
+  a0, ar;
 
-int   ListOutputSnaps[NOUT];
+int ListOutputSnaps[NOUT];
 float ListOutputRedshifts[NOUT];
+
 
 double ZZ[MAXSNAPS];
 double AA[MAXSNAPS];
@@ -220,7 +236,7 @@ double Age[MAXSNAPS];
 
 int Zlistlen;
 
-gsl_rng*random_generator;
+gsl_rng *random_generator;
 
 int NumMergers;
 
@@ -242,11 +258,11 @@ double tau_dt[STEPS*MAXSNAPS];//Width of every timestep in the code. (Used for S
 
 #ifdef COMPUTE_SPECPHOT_PROPERTIES
 //SSP PHOT TABLES
-float SSP_logMetalTab[SSP_NMETALLICITES];
-float SSP_logAgeTab[SSP_NAGES];
-float RedshiftTab[MAXSNAPS];
-float LumTables[NMAG][SSP_NMETALLICITES][MAXSNAPS][SSP_NAGES];
-float FilterLambda[NMAG+1];	//wavelength of each filter + 1 for V-band
+double SSP_logMetalTab[SSP_NMETALLICITES];
+double SSP_logAgeTab[SSP_NAGES];
+double RedshiftTab[MAXSNAPS];
+double LumTables[NMAG][SSP_NMETALLICITES][MAXSNAPS][SSP_NAGES];
+double FilterLambda[NMAG+1];	//wavelength of each filter + 1 for V-band
 #ifdef SPEC_PHOTABLES_ON_THE_FLY
 int NLambdaFilter[NMAG];
 #endif
@@ -254,7 +270,7 @@ int NLambdaFilter[NMAG];
 long mu_seed;
 #endif //COMPUTE_SPECPHOT_PROPERTIES
 
-void*TreeAuxData;
+void *TreeAuxData;
 
 #ifdef UPDATETYPETWO
 int NtotHalos, TotIds, Nids, TotSnaps, OffsetIDs;
@@ -263,9 +279,11 @@ long long *IdList;
 float *PosList, *VelList;
 #endif
 
-int    Hashbits;
-int    NumWrittenInParallel;
+
+int Hashbits;
+int NumWrittenInParallel;
 double ScaleFactor;
+
 
 #ifdef USE_MEMORY_TO_MINIMIZE_IO
 char *ptr_auxdata, *ptr_treedata, *ptr_dbids, *ptr_galaxydata, *ptr_galsnapdata[NOUT];
@@ -275,21 +293,16 @@ size_t offset_galsnapdata[NOUT], maxstorage_galsnapdata[NOUT], filled_galsnapdat
 #endif
 
 
-/*H2 formation table */
-#ifdef H2_AND_RINGS
-double h2frac[LENSIGMAH][LENZ];
-float Rho[RHO_LEN];
-float H2[RHO_LEN][Z_LEN];
-#endif
-/* reionization Okamoto et al. 2008*/
-float Reion_z[46], Reion_Mc[46];
 
-FILE*tree_file;
-FILE*treeaux_file;
-FILE*treedbids_file;
-FILE*FdGalTree;
-FILE*FdGalTreeSFH;
-FILE*FdGalDumps[NOUT];
+/* reionization Okamoto et al. 2008*/
+float Reion_z[46],Reion_Mc[46];
+
+FILE *tree_file;
+FILE *treeaux_file;
+FILE *treedbids_file;
+FILE *FdGalTree;
+FILE *FdGalTreeSFH;
+FILE *FdGalDumps[NOUT];
 
 #ifdef DEBUG
 FILE *FdGalDebug;

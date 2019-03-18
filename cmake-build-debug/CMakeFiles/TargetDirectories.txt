@@ -1,0 +1,3 @@
+/Users/Bam/ClionProjects/Rings/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/Bam/ClionProjects/Rings/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/Bam/ClionProjects/Rings/cmake-build-debug/CMakeFiles/Rings.dir

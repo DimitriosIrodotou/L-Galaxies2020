@@ -87,7 +87,7 @@ void save_galaxy_tree_reorder_on_disk (void);
 
 int save_galaxy_tree_mp_comp (const void*a, const void*b);
 
-void get_coordinates (float*pos, float*vel, long long ID, int tree, int halonr, int snapnum);
+void get_coordinates (double*pos, double*vel, long long ID, int tree, int halonr, int snapnum);
 
 //functions used to scale to a different cosmology
 void read_scaling_parameters ();
@@ -191,7 +191,11 @@ void update_h2fraction(int p);
 void gas_inflow(int p, double time);
 //only used if H2FractionRecipe=1
 void init_H2fraction_KMT08(void);
+void init_H2fraction_KMT09(void);
 double update_H2fraction_KMT08(double logsigmah, double metallicity);
+double update_H2fraction_KMT09(double logsigmah, double metallicity);
+void init_jump_index_H2Fraction(void);
+int get_jump_index_H2Fraction(double sigmaH);
 #endif
 
 void add_galaxies_together (int t, int p, double deltaT);
@@ -316,11 +320,17 @@ void grow_black_hole (int merger_centralgal, double mass_ratio, double deltaT);
 
 void check_disk_instability (int p, double dt);
 
+void check_disk_instability_gas (int p, double dt);
+
 void check_disk_instability_DI (int p, double dt);
 
-void fix_gas_instabilities (int p, int j, double SigmaGasRings, double SigmaCrit, double fmig);
+void fix_gas_instabilities (int p, int j, double SigmaGasRings, double SigmaCritGas, double fmig);
 
-void fix_stellar_instabilities (int p, int j, double SigmaStarRings, double SigmaCrit);
+void fix_stellar_instabilities (int p, int j, double SigmaStarRings, double SigmaCritStars);
+
+#ifdef H2_AND_RINGS
+void distribute_bulge_material(int merger_centralgal);
+#endif
 
 double lum_to_mag (double lum);
 
@@ -437,26 +447,19 @@ void create_sfh_bins();
 void write_sfh_bins();
 #endif //STAR_FORMATION_HISTORY
 
-#ifdef DETAILED_METALS_AND_MASS_RETURN
-struct metals metals_add(struct metals m1,
-		   struct metals m2,
-		   double fraction);
-struct metals metals_init();
-void metals_print(char s[],struct metals m);
-double metals_total(struct metals m);
+/*#ifdef DETAILED_METALS_AND_MASS_RETURN
+union metals_arr metals_add(union metals_arr m1, union metals_arr m2, double fraction);
+union metals_arr metals_init();
+void metals_print(char s[],union metals_arr m);
+double metals_total(union metals_arr m);
 #else
-
-double metals_add (double m1,
-                   double m2,
-                   double fraction);
-
-double metals_init ();
-
-void metals_print (char s[], double m);
-
-double metals_total (double m);
-
-#endif
+double metals_add(double m1,
+		 double m2,
+		 double fraction);
+double metals_init();
+void metals_print(char s[], double m);
+double metals_total(double m);
+#endif*/
 
 #ifdef DETAILED_METALS_AND_MASS_RETURN
 //in read_yield_tables.c:
@@ -477,10 +480,7 @@ int find_SNII_mass_bin2(double masslimit);*/
 #ifdef DTD
 double DTDcalc (double timevalue);
 #endif*/
-//void find_actual_ejecta_limits2(int channel_type, double Mi_lower_actual, double Mi_upper_actual, int Mi_lower, int Mi_upper, int Zi,
-// double* EjectedMasses_lower_actual,
-// double* EjectedMasses_upper_actual, double* TotalMetals_lower_actual, double* TotalMetals_upper_actual, double* Yields_lower_actual,
-// double* Yields_upper_actual);
+//void find_actual_ejecta_limits2(int channel_type, double Mi_lower_actual, double Mi_upper_actual, int Mi_lower, int Mi_upper, int Zi,  double* EjectedMasses_lower_actual, double* EjectedMasses_upper_actual, double* TotalMetals_lower_actual, double* TotalMetals_upper_actual, double* Yields_lower_actual, double* Yields_upper_actual);
 
 //in yield_integrals.c:
 void init_integrated_yields();
@@ -506,22 +506,21 @@ void find_actual_ejecta_limits(int channel_type, double Mi_lower_actual, double 
 
 //in recipe_yields.c:
 void update_yields_and_return_mass(int p, int centralgal, double dt, int nstep);
-int find_initial_metallicity(int p, int sfh_bin, int table_type, int component_type);
+int find_initial_metallicity(double metallicity, int table_type, int component_type);
 #ifdef INSTANTANEOUS_RECYCLE
-void reset_ejection_rates(int i, int sfh_ibin,
+void reset_ejection_rates(int ii, int sfh_ibin,
 		 double *NormSNIIMassEjecRate_actual, double *NormSNIIMetalEjecRate_actual,
 		 double *NormSNIaMassEjecRate_actual, double *NormAGBMassEjecRate_actual,
 		 double *NormSNIaMetalEjecRate_actual, double *NormAGBMetalEjecRate_actual);
 #endif
 
 #ifndef INDIVIDUAL_ELEMENTS
-void compute_actual_eject_rates(int TimeBin, int i, int Zi, double Zi_disp, int sfh_ibin, double SFRxStep, double SFRxStep_Phys, double Metallicity,
+void compute_actual_eject_rates(int TimeBin, int ii, int Zi, double Zi_disp, int sfh_ibin, double SFRxStep, double SFRxStep_Phys, double Metallicity,
 				 double *SNIIEjectaMass, double *SNIIAllMetals, double *SNIIUnProcessedMetals,
 				 double *SNIaEjectaMass, double *SNIaAllMetals, double *SNIaUnProcessedMetals,
 				 double *AGBEjectaMass, double *AGBAllMetals, double *AGBUnProcessedMetals);
 #else
-void compute_actual_eject_rates(int TimeBin, int i, int Zi, double Zi_disp, int sfh_ibin, double SFRxStep, double SFRxStep_Phys, double Metallicity,
-		double *MetallicityElement_Phys,
+void compute_actual_eject_rates(int TimeBin, int ii, int Zi, double Zi_disp, int sfh_ibin, double SFRxStep, double SFRxStep_Phys, double Metallicity, double *MetallicityElement_Phys,
 				 double *SNIIEjectaMass, double *SNIIAllMetals, double *SNIIUnProcessedMetals,
 				 double *SNIaEjectaMass, double *SNIaAllMetals, double *SNIaUnProcessedMetals,
 				 double *AGBEjectaMass, double *AGBAllMetals, double *AGBUnProcessedMetals,

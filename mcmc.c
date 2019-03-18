@@ -21,7 +21,6 @@
 #define RNMX (1.0-EPS)
 #define EPS 1.2e-7
 
-
 /**@file mcmc.c
  * @brief This is the main mcmc file, it reads in observational tests,
  *        starts a chain, proposes new sets of parameters, calls the
@@ -366,7 +365,7 @@ void print_parameters (int AcceptanceLogic, FILE *fmcmc)
 
 void create_bestfit_files()
 {
-  char buf[1000], sbuf[1000];
+  char buf[5000], sbuf[5000];
   int ii, ObsNr, snap;
   FILE *fa;
 
@@ -415,7 +414,7 @@ void create_bestfit_files()
   //if MaxLikeTask==ThisTask thistask is the highest likelihood, copy to final_bestfit
   if(MaxLikeTask==ThisTask)
     {
-      sprintf(buf, "cp %s/bestfit/task%d_bestfit.txt %s/bestfit/final_bestfit.txt",OutputDir, ThisTask, OutputDir, ThisTask);
+      sprintf(buf, "cp %s/bestfit/task%d_bestfit.txt %s/bestfit/final_bestfit.txt",OutputDir, ThisTask, OutputDir);
       system(buf);
       for(ObsNr=0;ObsNr<MCMCNConstraints;ObsNr++)
 	for(snap=0;snap<NOUT;snap++)
@@ -442,7 +441,7 @@ void initialize_mcmc_par_and_lhood (FILE *fmcmc)
 {
   int i, jj, snap, dumb_weight, EoF=0;
   double aux_p;
-  char buf[1000];
+  char buf[5000];
   FILE *fa;
 
   sprintf(buf, "%s", MCMCParameterPriorsAndSwitches);
@@ -815,8 +814,11 @@ void read_mcmc_par (int snapnum)
 	else if(strcmp(MCMC_PAR[i].Name,"ReincVelocitypower")==0)
 	  ReincVelocitypower = MCMC_PAR[i].PropValue[snap];
 
-	else if(strcmp(MCMC_PAR[i].Name,"FracZtoHot")==0)
-	  FracZtoHot = MCMC_PAR[i].PropValue[snap];
+        else if(strcmp(MCMC_PAR[i].Name,"FracZSNIItoHot")==0)
+          FracZSNIItoHot = MCMC_PAR[i].PropValue[snap];
+
+        else if(strcmp(MCMC_PAR[i].Name,"FracZSNIatoHot")==0)
+          FracZSNIatoHot = MCMC_PAR[i].PropValue[snap];
 
 	else if(strcmp(MCMC_PAR[i].Name,"Yield")==0)
 	  Yield = MCMC_PAR[i].PropValue[snap];
@@ -951,7 +953,7 @@ void read_observations (void)
   //FILE *f[MCMCNConstraints];
   FILE *fa;
   float BinValueColector;
-  char buf[1000],	sbuf[1000], aux_testName[1000], aux_testType[1000];
+  char buf[5000],	sbuf[5000], aux_testName[5000], aux_testType[5000];
 
   //allocate structure to contain observational data
   MCMC_Obs = mymalloc("MCMC_Obs", sizeof(struct MCMC_OBSCONSTRAINTS) * MCMCNConstraints);
@@ -1087,6 +1089,12 @@ void read_observations (void)
 		  //Binomial TESTS
 		  else if(strcmp(MCMC_Obs[i].TestType,"binomial")==0)
 		    fscanf(fa, "%f %lg %lg", &BinValueColector, &MCMC_Obs[i].ObsUp[snap][j], &MCMC_Obs[i].ObsDown[snap][j]);
+
+		  /*if(strcmp(MCMC_Obs[i].Name,"StellarMassFunction")==0 && snap>0)
+		    {
+		      MCMC_Obs[i].Bin_low[snap][j]+=0.4;
+		      MCMC_Obs[i].Bin_high[snap][j]+=0.4;
+		    }*/
 		}
 	      fclose(fa);
 
@@ -1107,7 +1115,7 @@ void read_observations (void)
 void open_files_with_comparison_to_observations()
 {
   int constraint, snap;
-  char buf[1000], sbuf[1000];
+  char buf[5000], sbuf[5000];
 
   sprintf(buf, "%sMCMC_LIKELIHOOD_%d.txt", OutputDir, ThisTask+FirstChainNumber);
   if((FILE_MCMC_LIKELIHOOD = fopen(buf, "w")) == NULL)
