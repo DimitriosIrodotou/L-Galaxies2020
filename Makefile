@@ -16,6 +16,7 @@ OBJS  = /Users/Bam/ClionProjects/Rings/main.o \
 	/Users/Bam/ClionProjects/Rings/metals.o \
 	/Users/Bam/ClionProjects/Rings/model_infall.o \
 	/Users/Bam/ClionProjects/Rings/model_h2fraction.o \
+	/Users/Bam/ClionProjects/Rings/model_instabilities.o \
 	/Users/Bam/ClionProjects/Rings/model_cooling.o \
 	/Users/Bam/ClionProjects/Rings/model_starformation_and_feedback.o \
 	/Users/Bam/ClionProjects/Rings/model_reincorporation.o \

@@ -189,7 +189,7 @@ Clumpingfactor              1.0      ;clumping factor in Krumholz' H2 fraction r
 									   % instead concentrated in spiral arms
 									   % for KMT09 H2 formation there is an additional pow((1.0/metallicityr),0.7)
 									   % dependence to solve issues with low-metallicity galaxies
-GasInflowVel                900.      ;km/s/Mpc
+GasInflowVel                100.      ;km/s/Mpc
 
 %-------------------------------------------
 %% Star formation bursts during mergers

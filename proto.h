@@ -328,6 +328,10 @@ void fix_gas_instabilities (int p, int j, double SigmaGasRings, double SigmaCrit
 
 void fix_stellar_instabilities (int p, int j, double SigmaStarRings, double SigmaCritStars);
 
+void update_sizes_from_instabilities (int p, int j, double UnstableMass, char process[]);
+
+void update_metals_from_instabilities (int p, int j, double UnstableMass, char process[]);
+
 #ifdef H2_AND_RINGS
 void distribute_bulge_material(int merger_centralgal);
 #endif

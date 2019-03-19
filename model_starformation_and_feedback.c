@@ -1000,244 +1000,7 @@ void update_massweightage (int p, double stars, double time) {
 	}
 }
 
-void fix_gas_instabilities (int p, int j, double SigmaGasRings, double SigmaCritGas, double fmig) {
-	double UnstableMass;
-
-	if (j != 0) {
-		// Convert unstable mass from (1e10 M_sun/h^2) to (1e10 M_sun/h)
-		UnstableMass = (SigmaGasRings - SigmaCritGas) * M_PI * (RingRadius[j] * RingRadius[j] - RingRadius[j - 1] * RingRadius[j - 1]) / Hubble_h;
-	} else {
-		UnstableMass = (SigmaGasRings - SigmaCritGas) * M_PI * RingRadius[j] * RingRadius[j] / Hubble_h;
-	}
-	if (UnstableMass > 0.0) {
-		if (UnstableMass > Gal[p].ColdGasRings[j]) {
-			UnstableMass = Gal[p].ColdGasRings[j];
-		}
-
-		if (j != 0) { // fmig*UnstableMass is moved to adjacent annuli and the remaining is transformed into stars.
-//			Gal[p].ColdGasRings[j - 1] += (2 * fmig * UnstableMass) / 3.;
-//			Gal[p].ColdGasRings[j + 1] += (fmig * UnstableMass) / 3.;
-//			Gal[p].DiskMassRings[j] += (1.0 - fmig) * UnstableMass;
-//			Gal[p].ColdGasRings[j] -= UnstableMass;
-
-//			// Deal with the associated feedback.
-//			update_h2fraction (p);
-//			sfe    = SfrEfficiency * UnitTime_in_years / Hubble_h;
-//			if (SFRtdyn == 1) {
-//				sfe = (sfe / tdyn) / UnitTime_in_years * Hubble_h * 1e7;
-//			} // for star formation rate proportional to 1/t_dyn
-//			strdot += strdotr[j];
-//			for (j = 0; j < RNUM; j ++) {
-//				if (strdotr[j] < 0.0) {
-//					strdotr[j] = 0.;
-//				}
-//				starsRings[j] = strdotr[j] * dt;
-//				if (starsRings[j] < 0.0) {
-//					starsRings[j] = 0.0;
-//				}
-//			}
-//#ifdef COMPUTE_SPECPHOT_PROPERTIES
-//#ifndef POST_PROCESS_MAGS
-//			if (Gal[p].ColdGas > 0.) {
-//				metallicitySF = metals_total (Gal[p].MetalsColdGas) / Gal[p].ColdGas;
-//			} else {
-//				metallicitySF = 0.;
-//			}
-//#endif // COMPUTE_SPECPHOT_PROPERTIES
-//#endif // POST_PROCESS_MAGS
-//#ifndef FEEDBACK_COUPLED_WITH_MASS_RETURN
-//			update_stars_due_to_reheat (p, centralgal, &UnstableMass, starsRings);
-//#endif //FEEDBACK_COUPLED_WITH_MASS_RETURN
-//			Gal[p].SfrRings[j] += starsRings[j] / (dt * STEPS);
-//			update_from_star_formation (p, UnstableMass, starsRings, "insitu", nstep);
-//
-//#ifdef COMPUTE_SPECPHOT_PROPERTIES
-//#ifndef POST_PROCESS_MAGS
-//			//  Update the luminosities due to the stars formed
-//			add_to_luminosities (p, UnstableMass, time, dt, metallicitySF);
-//#endif // POST_PROCESS_MAGS
-//#endif // COMPUTE_SPECPHOT_PROPERTIES
-//			update_massweightage (p, UnstableMass, time);
-//
-//#ifndef FEEDBACK_COUPLED_WITH_MASS_RETURN
-//			SN_feedback (p, centralgal, UnstableMass, starsRings, "ColdGas");
-//#endif // FEEDBACK_COUPLED_WITH_MASS_RETURN
-
-			if (DiskRadiusModel == 0) {
-				Gal[p].DiskRadius = get_stellar_disk_radius (p);
-			}
-		} else { // If you remove mass from the last ring (i.e., 0), then transfer it to the black hole.
-//			Gal[p].BlackHoleMass += UnstableMass;
-//			Gal[p].ColdGasRings[j] -= UnstableMass;
-		}
-	}
-}
-
-void fix_stellar_instabilities (int p, int j, double SigmaStarRings, double SigmaCritStars) {
-	double UnstableMass, f;
-
-	if (j != 0) {
-		// Convert unstable mass from (1e10 M_sun/h^2) to (1e10 M_sun/h)
-		UnstableMass = (SigmaStarRings - SigmaCritStars) * M_PI * (RingRadius[j] * RingRadius[j] - RingRadius[j - 1] * RingRadius[j - 1]) / Hubble_h;
-	} else {
-		UnstableMass = (SigmaStarRings - SigmaCritStars) * M_PI * RingRadius[j] * RingRadius[j] / Hubble_h;
-	}
-	if (UnstableMass > 0.0) {
-		if (UnstableMass > Gal[p].DiskMassRings[j]) {
-			UnstableMass = Gal[p].DiskMassRings[j];
-		}
-		if (j != 0) { // Move 2/3 of the unstable mass to the inner and 1/3 to the outer ring along with the associated metals.
-			Gal[p].DiskMassRings[j - 1] += (2 * UnstableMass) / 3.;
-			Gal[p].DiskMassRings[j + 1] += UnstableMass / 3.;
-			Gal[p].DiskMassRings[j] -= UnstableMass;
-
-//			fractionRings[j] = UnstableMass / Gal[p].DiskMassRings[j];
-//			fractionRings[j+1] = (2 * UnstableMass) / (3 * Gal[p].DiskMassRings[j]);
-//			fractionRings[j-1] = UnstableMass / (3 * Gal[p].DiskMassRings[j]);
-//			transfer_material_with_rings (p, "DiskMass", p, "DiskMass", fractionRings, "model_starformation_and_feedback.c", __LINE__);
-		} else { // If you remove mass from the last ring (i.e., 0), then transfer it to the bulge.
-			Gal[p].BulgeMass += UnstableMass;
-			update_bulgesize_from_disk_instability (p, UnstableMass);
-			Gal[p].DiskMassRings[j] -= UnstableMass;
-//			fractionRings[j] = Gal[p].DiskMassRings[j] / UnstableMass;
-//			transfer_material_with_rings (p, "BulgeMass", p, "DiskMass", fractionRings, "model_starformation_and_feedback.c", __LINE__);
-		}
-	}
-}
-
-void check_disk_instability_DI (int p, double dt) {
-	double RdStars, Vmax, kappa, sigmaGas, sigmaStars, SigmaCritGas, SigmaCritStars, SigmaStarRings, SigmaGasRings, q, s, W, Qstars, Qgas, Qtot,
-	       Qmin, Qcrit, UnstableMass, fRing[RNUM - 1];
-	double G    = 43.02; // Gravitational constant in Mpc 1e-10 Msun^-1 km^2 s^-2
-	double fmig = 0.3; // Fraction of unstable gas migrated to adjacent annuli.
-	int    i    = 0, imax = 1, k, j, n[RNUM - 1], sum, noQtot;
-
-	do {
-		// Set the instability flag for this galaxy to zero.
-		sum = 0;
-
-		// Calculate the scale length and Vmax.
-		RdStars = get_stellar_disk_radius (p) / 3.0;
-		if (Gal[p].Type != 0) {
-			Vmax = Gal[p].InfallVmax;
-		} else {
-			Vmax = Gal[p].Vmax;
-		}
-
-		// Star a loop from ring 10 to ring 0 and check the stability of each ring.
-		for (j = RNUM - 2; j >= 0; j --) {
-			// Set the instability flag for this ring to zero.
-			n[j]     = 0;
-			fRing[j] = 0.0;
-
-			if (j != 0) { // Calculate surface densities and convert them from (1e10 M_sun/h / (Mpc/h)^2) to (1e10 M_sun / Mpc^2)
-				SigmaGasRings  = (Gal[p].ColdGasRings[j] * Hubble_h) /
-				                 (M_PI * (RingRadius[j] * RingRadius[j] - RingRadius[j - 1] * RingRadius[j - 1]));
-				SigmaStarRings = (Gal[p].DiskMassRings[j] * Hubble_h) /
-				                 (M_PI * (RingRadius[j] * RingRadius[j] - RingRadius[j - 1] * RingRadius[j - 1]));
-			} else { // Follow the same process for the central ring.
-				SigmaGasRings  = (Gal[p].ColdGasRings[j] * Hubble_h) / (M_PI * RingRadius[j] * RingRadius[j]);
-				SigmaStarRings = (Gal[p].DiskMassRings[j] * Hubble_h) / (M_PI * RingRadius[j] * RingRadius[j]);
-			}
-
-			// Calculate the required quantities for the local Toomre Q parameter.
-			sigmaGas   = 11.0; // Gas radial velocity dispersion in km s^-1
-			kappa      = (sqrt (2) * Vmax * Hubble_h) / RingRadius[j]; // Epicyclic frequency in km s^-1 Mpc^-1
-			sigmaStars = 0.87 * sqrt (M_PI * G * SigmaStarRings * RdStars / Hubble_h); // Leroy+08 velocity dispersion in km s^-1
-//			sigmaStars = 0.5 * Vmax * exp ((- 1 * RingRadius[j]) / (2 * RdStars)); // Bottema+93 velocity dispersion in km s^-1
-
-			if (Gal[p].DiskMass > 0.0 && Gal[p].ColdGas > 0.0 && Gal[p].ColdGasRings[j] > 1.0e-6 && Gal[p].DiskMassRings[j] > 1.0e-6) {
-				// Calculate the Toomre Q parameters
-				Qgas   = (kappa * sigmaGas) / (M_PI * G * SigmaGasRings);
-				Qstars = (kappa * sigmaStars) / (3.36 * G * SigmaStarRings);
-
-				// Calculate Qtot if both components are present (noQtot = 0). Else solve single component instabilities (noQtot = 1).
-				noQtot = 0;
-				q      = Qgas / Qstars;
-				s      = sigmaGas / sigmaStars;
-				W      = (2 * s) / (1 + (s * s)); // Weight factor.
-				Qmin   = 1.0 + W; // The minimum Q value for stellar and gas rings. For Q > Qmin the component is stable.
-
-				// Calculate the conditional function for total Q
-				if (q <= 1.0) {
-					Qcrit = Qstars / (Qstars - W);
-					Qtot  = (Qstars * Qgas) / (W * Qgas + Qstars);
-				} else if (q > 1.0) {
-					Qcrit = Qgas / (Qgas - W);
-					Qtot  = (Qstars * Qgas) / (W * Qstars + Qgas);
-				}
-			} else {
-				noQtot = 1;
-				Qmin   = 1.0;
-			}
-
-			// Check if the ring is unstable
-			if (Qtot < 1.0 && Qtot > 0.0 && noQtot == 0) {
-				if (Qstars > Qmin && Qgas < Qmin) { // Then q must be <= 1.0 so the unstable mass is in the form of gas.
-					// Since this ring is unstable we will transfer mass to the previous one, so we need to re-check its stability
-					n[j] = 1;
-					// Calculate the critical surface mass density of the ring.
-					SigmaCritGas = (kappa * sigmaGas) / (M_PI * G * Qcrit);
-					// Invoke a function to deal with instabilities in the gas ring.
-					fix_gas_instabilities (p, j, SigmaGasRings, SigmaCritGas, fmig);
-
-				} else if (Qgas > Qmin && Qstars < Qmin) { // Then q must be > 1.0 so the unstable mass is in the form of stars.
-					n[j] = 1;
-					// Calculate the critical surface mass density of the ring.
-					SigmaCritStars = (kappa * sigmaStars) / (3.36 * G * Qcrit);
-					// Invoke a function to deal with instabilities in the stellar ring.
-					fix_stellar_instabilities (p, j, SigmaStarRings, SigmaCritStars);
-
-				} else if (Qstars < Qmin && Qgas < Qmin) { // First raise Qgas to Qmin and then Qstars.
-					n[j] = 1;
-					// Calculate the critical surface mass density of the ring.
-					SigmaCritGas = (kappa * sigmaGas) / (M_PI * G * Qmin);
-					// Invoke a function to deal with instabilities in the gas ring.
-					fix_gas_instabilities (p, j, SigmaGasRings, SigmaCritGas, fmig);
-
-					// Re-calculate SigmaStarRings and raise as necessary.
-					SigmaStarRings = (Gal[p].DiskMassRings[j] * Hubble_h) /
-					                 (M_PI * (RingRadius[j] * RingRadius[j] - RingRadius[j - 1] * RingRadius[j - 1]));
-					// Calculate the critical surface mass density of the ring.
-					SigmaCritStars = (kappa * sigmaStars) / (3.36 * G * Qmin);
-					// Invoke a function to deal with instabilities in the stellar ring.
-					fix_stellar_instabilities (p, j, SigmaStarRings, SigmaCritStars);
-				}
-			} // if (Qtot < 1.0 && noQtot == 0)
-			if (noQtot == 1) {
-				if (Gal[p].DiskMassRings[j] == 0.0 && Gal[p].ColdGasRings[j] > 1e-6 && Qgas < Qmin && Qgas > 0.0) { // The unstable mass is in the
-					// form of gas.
-					n[j] = 1;
-					// Calculate the critical surface mass density of the ring.
-					SigmaCritGas = (kappa * sigmaGas) / (M_PI * G);
-					// Invoke a function to deal with instabilities in the gas ring.
-					fix_gas_instabilities (p, j, SigmaGasRings, SigmaCritGas, fmig);
-
-				} else if (Gal[p].ColdGasRings[j] == 0.0 && Gal[p].DiskMassRings[j] > 1e-6 && Qstars < Qmin && Qstars > 0.0) { // The unstable
-					// mass is in the form of stars.
-					n[j] = 1;
-					// Calculate the critical mass of the ring
-					SigmaCritStars = (kappa * sigmaStars) / (3.36 * G);
-					// Invoke a function to deal with instabilities in the stellar ring.
-					fix_stellar_instabilities (p, j, SigmaStarRings, SigmaCritStars);
-				}
-			} // if (noQtot == 1)
-		} // for (j  = RNUM - 2; j >= 0; j --)
-
-		// Once you finished the entire disk (11 rings) check if each ring is stable i.e., n[j] = 0 for all j. If not
-		// repeat the whole process until n[j] = 0 for all j but no more than 30 times. Note: in the above for loop
-		// j goes from 10 to 0, so after the last iterration its value is -1.
-		if (j < 0) {
-			for (k = 0; k < RNUM - 1; k ++) {
-				sum += n[k];
-			}
-		}
-		i += 1;
-	} while (i < imax && sum > 0);
-}    // check_disk_instability_DI
-
-/** @brief Checks for disk stability using the
- *         Mo, Mao & White (1998) criteria as in Irodotou2018 */
+/* @brief Checks for disk stability using the Mo, Mao & White (1998) criteria as in Irodotou2018 */
 
 void check_disk_instability_gas (int p, double dt) {
 
@@ -1484,27 +1247,19 @@ void check_disk_instability (int p, double dt) {
 } //end check_disk_instability
 
 
-/** @brief Introduced in Guo2010 to track the change in size of bulges
- *         after their growth due to disk instabilities. */
+/* @brief Introduced in Guo2010 to track the change in size of bulges after their growth due to disk instabilities. Updates bulge from disk
+* instability -> stars represents the mass transfered to the bulge, which occupies a size in the bulge equal to that occupied in the disk. */
 
 void update_bulgesize_from_disk_instability (int p, double stars) {
 	double bulgesize, diskmass, fint, massfrac;
 	int    j;
 
-
-/** @brief Updates bulge from disk instability -> stars represents the mass
-  *        transfered to the bulge, which occupies a size in the bulge equal
-  *        to that occupied in the disk. */
-
-
 	// alpha_inter=2.0/C=0.5 (alpha larger than in mergers since
 	// the existing and newly formed bulges are concentric)
 	fint = 4.0;
 
-	// disk instabilities are assumed to NOT remove angular momentum.
-	// Since the mass of the disk changes, the spin is changed by the same
-	// amount to keep angular momentum constant
-
+	// disk instabilities are assumed to NOT remove angular momentum. Since the mass of the disk changes, the spin is changed by the same amount to
+	// keep angular momentum constant
 
 	diskmass = Gal[p].DiskMass;
 	massfrac = stars / diskmass;
@@ -1526,20 +1281,13 @@ void update_bulgesize_from_disk_instability (int p, double stars) {
 	orisize=Gal[p].BulgeSize;
 #endif
 
-
-
-
 	//GET BULGE SIZE - Eq. 35 in Guo2010
-	/* size of newly formed bulge, which consists of the stellar mass transfered
-	 * from the disk. This is calculated using bulge_from_disk which receives
-	 * Delta_M/DiskMass and returns Rb/Rd. From eq 35 and since
-	 * DiskMass=2PISigma(Rd)^2 we see that
-	 * Delta_M/DiskMass=1-(1+Rb/Rd)*exp(-Rb/Rd), so function bulge_from_disk
-	 * avoids calculating the slow "ln" function */
+	/* size of newly formed bulge, which consists of the stellar mass transfered from the disk. This is calculated using bulge_from_disk which
+	* receives Delta_M/DiskMass and returns Rb/Rd. From eq 35 and since DiskMass=2PISigma(Rd)^2 we see that Delta_M/DiskMass=1-(1+Rb/Rd)*exp
+	* (-Rb/Rd), so function bulge_from_disk avoids calculating the slow "ln" function */
 	bulgesize = bulge_from_disk (stars / diskmass) * Gal[p].DiskRadius / 3.;
 	if (Gal[p].BulgeMass < TINY_MASS) {
-		/* if previous Bulge Mass = 0
-		 * -> bulge size is given directly from newly formed bulge */
+		// if previous Bulge Mass = 0 -> bulge size is given directly from newly formed bulge */
 		Gal[p].BulgeSize = bulgesize;
 	} else {
 		/* combine the old with newly formed bulge and calculate the
@@ -1567,7 +1315,7 @@ void update_bulgesize_from_disk_instability (int p, double stars) {
 #else //H2_AND_RINGS
 
 	/*size of new formed bulge, which consist of the stellar mass trasfered from the disk*/
-	/*combine the old bulge with the new materials and caculate the bulge size assuming energy conservation */
+	/*combine the old bulge with the new materials and calculate the bulge size assuming energy conservation */
 	diskmass=stars;
 	//j=0;
    // if(diskmass>1.0e-6)
@@ -1646,5 +1394,4 @@ double bulge_from_disk (double frac) {
 
 double func_size (double x, double a) {
 	return exp (- x) * (1 + x) - (1 - a);
-}  
-
+}

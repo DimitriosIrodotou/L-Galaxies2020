@@ -23,7 +23,7 @@ size_t * output_sizes;
 hsize_t dims[6];
  
 // The number of fields in the data
-int nfields=72;
+int nfields=81;
  
 // The field names
 const char * field_names[]={
@@ -99,6 +99,15 @@ const char * field_names[]={
 "sfh_MetalsDiskMass",
 "sfh_MetalsBulgeMass",
 "sfh_MetalsICM",
+"sfh_DiskMass_elements",
+"sfh_BulgeMass_elements",
+"sfh_ICM_elements",
+"DiskMass_elements",
+"BulgeMass_elements",
+"ColdGas_elements",
+"HotGas_elements",
+"ICM_elements",
+"EjectedMass_elements",
 };
  
 // Information describing the datatypes and array flags
@@ -177,6 +186,15 @@ char types[]={
 'f',
 'f',
 'f',
+'f',
+'f',
+'f',
+'f',
+'f',
+'f',
+'f',
+'f',
+'f',
 }; 
  
 int flag3[]={
@@ -196,6 +214,15 @@ int flag3[]={
 0,
 1,
 1,
+0,
+0,
+0,
+0,
+0,
+0,
+0,
+0,
+0,
 0,
 0,
 0,
@@ -327,9 +354,27 @@ int flagMag[]={
 0,
 0,
 0,
+0,
+0,
+0,
+0,
+0,
+0,
+0,
+0,
+0,
 }; 
  
 int flagRings[]={
+0,
+0,
+0,
+0,
+0,
+0,
+0,
+0,
+0,
 0,
 0,
 0,
@@ -477,6 +522,15 @@ int flagSFH[]={
 1,
 1,
 1,
+1,
+1,
+1,
+0,
+0,
+0,
+0,
+0,
+0,
 }; 
  
 int flagElements[]={
@@ -552,4 +606,13 @@ int flagElements[]={
 0,
 0,
 0,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
 }; 

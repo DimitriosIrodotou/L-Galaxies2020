@@ -69,7 +69,7 @@ ifeq (DETAILED_METALS_AND_MASS_RETURN,$(findstring DETAILED_METALS_AND_MASS_RETU
 OPT  += -DFEEDBACK_COUPLED_WITH_MASS_RETURN
 OPT  += -DINDIVIDUAL_ELEMENTS
 ifeq (INDIVIDUAL_ELEMENTS,$(findstring INDIVIDUAL_ELEMENTS,$(OPT)))
-#OPT  += -DOUTPUT_ELEMENTS
+OPT  += -DOUTPUT_ELEMENTS
 OPT += -DMAINELEMENTS  #If on, then only H, He, O, Mg and Fe are tracked. If off, all elements are tracked (H,He,C,N,O,Ne,Mg,Si,S,Ca,Fe)
 endif
 OPT  += -DMETALRICHWIND
@@ -86,4 +86,5 @@ OPT += -DPOWERLAWDTD #Use a declining power-law delay time distribution of slope
 endif
 endif
 
-#OPT += -DDI_INSTABILITIES
+OPT += -DDI_INSTABILITIES
+#OPT += -DMASS_CHECKS
