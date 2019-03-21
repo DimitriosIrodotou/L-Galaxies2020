@@ -23,7 +23,7 @@ size_t * output_sizes;
 hsize_t dims[6];
  
 // The number of fields in the data
-int nfields=81;
+int nfields=82;
  
 // The field names
 const char * field_names[]={
@@ -43,6 +43,7 @@ const char * field_names[]={
 "Vmax",
 "ColdGasSpin",
 "DiskSpin",
+"BulgeSpin",
 "InfallVmax",
 "InfallVmaxPeak",
 "InfallSnap",
@@ -124,6 +125,7 @@ char types[]={
 'f',
 'f',
 'i',
+'f',
 'f',
 'f',
 'f',
@@ -214,6 +216,7 @@ int flag3[]={
 0,
 1,
 1,
+1,
 0,
 0,
 0,
@@ -282,6 +285,7 @@ int flag3[]={
 }; 
  
 int flagMag[]={
+0,
 0,
 0,
 0,
@@ -447,9 +451,11 @@ int flagRings[]={
 0,
 0,
 0,
+0,
 }; 
  
 int flagSFH[]={
+0,
 0,
 0,
 0,
@@ -534,6 +540,7 @@ int flagSFH[]={
 }; 
  
 int flagElements[]={
+0,
 0,
 0,
 0,

@@ -35,6 +35,7 @@ struct GALAXY_OUTPUT {
     float Vmax; // km/s //Maximum rotational velocity of the subhalo, or the last value for type 2's galaxies.
     float ColdGasSpin[3]; // Mpc/h km/s // The specific angular momentum of the cold gas disk
     float DiskSpin[3]; // Mpc/h km/s // The specific angular momentum of the stellar disk
+    float BulgeSpin[3]; // Mpc/h km/s // The specific angular momentum of the bulge
     float InfallVmax; // km/s // Maximum rotational velocity of the host halo of this galaxy at infall (ie last time a type 0)
     float InfallVmaxPeak; // km/s // ? Peak Vmax along past history
     int InfallSnap; // None // Most recent (largest) snapnum at which this galaxy's type changed from 0 to 1 or 2
@@ -44,7 +45,7 @@ struct GALAXY_OUTPUT {
 
     float OriMergTime; // yr // Estimated dynamical friction time when the merger clock is set.
     float MergTime; //yr // Estimated remaining merging time. 
-# 122 "/Users/Bam/ClionProjects/Rings/h_galaxy_output.h"
+# 123 "/Users/Bam/ClionProjects/Rings/h_galaxy_output.h"
     /* baryonic reservoirs */
     float ColdGas; // 10^10/h Msun // Mass in cold gas.
 
@@ -133,7 +134,7 @@ struct GALAXY_OUTPUT {
     float MagDust[5]; // AB mag // dust corrected, rest-frame absolute mags
     float Mag[5]; // AB mag // rest-frame absolute mags
     float MagBulge[5]; // AB mag // rest-frame absolute mags for the bulge
-# 242 "/Users/Bam/ClionProjects/Rings/h_galaxy_output.h"
+# 243 "/Users/Bam/ClionProjects/Rings/h_galaxy_output.h"
     float MassWeightAge; //10^9yr //The age of this galaxy weighted by mass of its components.
 
     float rbandWeightAge; // 10^9yr // The age of this galaxy weighted by mass of its components.
@@ -154,7 +155,7 @@ struct GALAXY_OUTPUT {
     float sfh_MetalsDiskMass[SFH_NBIN][NUM_METAL_CHANNELS]; // 10^10 Msun/h // Metal formation history in the disk.
     float sfh_MetalsBulgeMass[SFH_NBIN][NUM_METAL_CHANNELS]; // 10^10 Msun/h // Metal formation history in the bulge.
     float sfh_MetalsICM[SFH_NBIN][NUM_METAL_CHANNELS]; // 10^10 Msun/h // Metal formation history in the ICM.
-# 274 "/Users/Bam/ClionProjects/Rings/h_galaxy_output.h"
+# 275 "/Users/Bam/ClionProjects/Rings/h_galaxy_output.h"
     //All: [H][He][Cb][N][O][Ne][Mg][Si][S][Ca][Fe] or //Only [H][He][O][Mg][Fe]
 
     float sfh_DiskMass_elements[SFH_NBIN][NUM_ELEMENTS]; // 10^10 Msun/h // History of mass of elements locked up in stars in disk.
@@ -196,7 +197,7 @@ struct SFH_BIN {
 
 
     float sfh_ICM; // 1e10 Msun/h // SFH of ICM
-# 323 "/Users/Bam/ClionProjects/Rings/h_galaxy_output.h"
+# 324 "/Users/Bam/ClionProjects/Rings/h_galaxy_output.h"
     float sfh_MetalsDiskMass[NUM_METAL_CHANNELS]; // 1e10 Msun/h // Metals locked up in stars in disk.
     float sfh_MetalsBulgeMass[NUM_METAL_CHANNELS]; // 1e10 Msun/h // Metals locked up in stars in bulge.
     float sfh_MetalsICM[NUM_METAL_CHANNELS]; // 1e10 Msun/h // Metals locked up in stars in ICM.

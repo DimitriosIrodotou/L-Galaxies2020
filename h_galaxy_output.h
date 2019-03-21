@@ -98,6 +98,7 @@ struct GALAXY_OUTPUT {
     float Vmax; // km/s //Maximum rotational velocity of the subhalo, or the last value for type 2's galaxies.
     float ColdGasSpin[3]; // Mpc/h km/s // The specific angular momentum of the cold gas disk
     float DiskSpin[3]; // Mpc/h km/s // The specific angular momentum of the stellar disk
+    float BulgeSpin[3]; // Mpc/h km/s // The specific angular momentum of the bulge
     float InfallVmax; // km/s // Maximum rotational velocity of the host halo of this galaxy at infall (ie last time a type 0)
     float InfallVmaxPeak; // km/s // ? Peak Vmax along past history
     int InfallSnap; // None // Most recent (largest) snapnum at which this galaxy's type changed from 0 to 1 or 2

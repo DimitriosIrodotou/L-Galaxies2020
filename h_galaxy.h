@@ -36,7 +36,8 @@ struct GALAXY			/* Galaxy data */
   double HaloSpin[3];
   double ColdGasSpin[3];
   double DiskSpin[3];
-  int   Len;   
+  double BulgeSpin[3];
+  int   Len;
   double Mvir;
   double Rvir;
   double Vvir;

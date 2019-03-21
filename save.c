@@ -263,6 +263,7 @@ void prepare_galaxy_for_output(int n, struct GALAXY *g, struct GALAXY_OUTPUT *o)
 #endif
       o->ColdGasSpin[j] = g->ColdGasSpin[j];
       o->DiskSpin[j] = g->DiskSpin[j];
+      o->BulgeSpin[j] = g->BulgeSpin[j];
 
 #ifdef HALOPROPERTIES
       o->HaloPos[j] = g->HaloPos[j];
@@ -277,6 +278,7 @@ void prepare_galaxy_for_output(int n, struct GALAXY *g, struct GALAXY_OUTPUT *o)
 
 #ifndef H2_AND_RINGS
   o->BulgeSize = g->BulgeSize;
+  o->BulgeSpin = g->BulgeSpin;
 #else
   //BULGE
   if(g->BulgeSize<1.0e-6)
@@ -781,6 +783,9 @@ void fix_units_for_ouput(struct GALAXY_OUTPUT *o)
   o->DiskSpin[0] /= Hubble_h;
   o->DiskSpin[1] /= Hubble_h;
   o->DiskSpin[2] /= Hubble_h;
+  o->BulgeSpin[0] /= Hubble_h;
+  o->BulgeSpin[1] /= Hubble_h;
+  o->BulgeSpin[2] /= Hubble_h;
   o->HotRadius /= Hubble_h;
   o->ColdGas /= Hubble_h;
   o->DiskMass /= Hubble_h;
