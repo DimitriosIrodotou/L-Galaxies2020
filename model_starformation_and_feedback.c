@@ -1076,7 +1076,7 @@ void check_disk_instability_gas (int p, double dt) {
 			Gal[p].QuasarAccretionRate += BH_unstable_mass / mass * Gal[p].ColdGas / (dt * STEPS);
 
 		}
-	}// if(unstable_mass > 0.0)
+	}// if (BHGrowthInDiskInstabilityModel == 1)
 
 
 	/* add excess stars to the bulge */
@@ -1198,28 +1198,6 @@ void check_disk_instability (int p, double dt) {
 		transfer_material (p, "BulgeMass", p, "DiskMass", fraction, "model_starformation_and_feedback.c", __LINE__);
 #endif
 
-		/* if(BHGrowthInDiskInstabilityModel == 1)
-	   if(Gal[p].ColdGas > 0.)
-		 {
-  #ifdef H2_AND_RINGS
-
-		   for(j=0;j<RNUM;j++)
-			 {
-		   fractionRings[j]*=0.1*BlackHoleGrowthRate  / (1.0 + pow2((BlackHoleCutoffVelocity / Gal[p].Vvir)));
-		   fractionRings[j] = min(1.0,fractionRings[j]);
-			 }
-
-		   transfer_material_with_rings(p,"BlackHoleMass",p,"ColdGas",fractionRings,"model_starformation_and_feedback.c", __LINE__);
-		   mass_checks(p,"model_starformation_and_feedback.c",__LINE__);
-  #else
-		   fraction*=0.1*BlackHoleGrowthRate  / (1.0 + pow2((BlackHoleCutoffVelocity / Gal[p].Vvir)));
-		   transfer_material(p,"BlackHoleMass",p,"ColdGas",fraction, "model_starformation_and_feedback.c", __LINE__);
-  #endif
-		   Gal[p].QuasarAccretionRate += fraction*Gal[p].ColdGas / (dt*STEPS);
-
-		 }*/
-
-
 #ifdef BULGESIZE_DEBUG
 		mass_checks(p,"model_starformation_and_feedback.c",__LINE__);
 		if ((Gal[p].BulgeMass > TINY_MASS && Gal[p].BulgeSize < TINY_LENGTH)||
@@ -1228,20 +1206,6 @@ void check_disk_instability (int p, double dt) {
 		terminate("bulgesize wrong in disk instablility\n");
 		}
 #endif
-
-/*
-       //burst of star formation from the instability, same as in mergers, with diskmass transferred in instability = mass of satellite
-       // and total disk mass = mass of central
-       double frac, mass_ratio = fraction;
-       frac = collisional_starburst_recipe(mass_ratio, p, p, time, dt*STEPS);
-       bulgesize_from_merger(mass_ratio, p, p, Gal[p].BulgeMass+Gal[p].DiskMass, Gal[p].BulgeMass, Gal[p].ColdGas,
-			     Gal[p].DiskMass*fraction, 0, Gal[p].ColdGas*fraction, frac,
-			     get_gas_disk_radius(p)/3., get_stellar_disk_radius(p)/3., get_gas_disk_radius(p)/3., get_stellar_disk_radius(p)/3.);
-
-       if(mass_ratio > ThreshMajorMerger)
-          make_bulge_from_burst(p);*/
-
-
 	}// if(stars > 0.0)
 	mass_checks (p, "model_starformation_and_feedback.c", __LINE__);
 } //end check_disk_instability

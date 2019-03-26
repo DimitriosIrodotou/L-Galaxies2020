@@ -139,7 +139,6 @@ void fix_gas_instabilities (int p, int j, double SigmaGasRings, double SigmaCrit
 		if (UnstableMass > Gal[p].ColdGasRings[j]) {
 			UnstableMass = Gal[p].ColdGasRings[j];
 		}
-
 		Gal[p].ColdGas -= UnstableMass;
 		Gal[p].ColdGasRings[j] -= UnstableMass;
 

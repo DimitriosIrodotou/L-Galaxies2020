@@ -324,11 +324,11 @@ void check_disk_instability_gas (int p, double dt);
 
 void check_disk_instability_DI (int p, double dt);
 
-void fix_gas_instabilities (int p, int j, double SigmaGasRings, double SigmaCritGas, double fmig);
+void fix_gas_instabilities (int p, int j, double SigmaGasRings, double SigmaCritGas);
 
-void fix_stellar_instabilities (int p, int j, double SigmaStarRings, double SigmaCritStars, char phase[]);
+void fix_stellar_instabilities (int p, int j, double SigmaStarRings, double SigmaCritStars);
 
-void update_sizes_from_instabilities (int p, int j, double UnstableMass, double fcarry, char process[]);
+void update_sizes_from_instabilities (int p, int j, double UnstableMass, char process[]);
 
 #ifdef H2_AND_RINGS
 void distribute_bulge_material(int merger_centralgal);
